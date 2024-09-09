@@ -25,4 +25,5 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('sample.urls', namespace='sample')),
     path('signup/', views.signup_view, name='signup'),
+    path('doctor/', include('doctor_urls', namespace='doctor'))
 ]
