@@ -118,3 +118,4 @@ class LogoutView(View):
         logout(request)
         return redirect('user:login')
 
+

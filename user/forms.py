@@ -1,5 +1,6 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
+
 from django.core.exceptions import ValidationError
 from .models import User
 
@@ -14,6 +15,7 @@ class CustomUserCreationForm(UserCreationForm):
     password2 = forms.CharField(label='confirm password', widget=forms.PasswordInput)
     role = forms.ChoiceField(choices=ROLE_CHOICES, required=True)
     specialization = forms.CharField(required=False)
+
     class Meta:
         model = User
         fields = ('first_name',
@@ -47,3 +49,4 @@ class CustomAuthenticationForm(AuthenticationForm):
 
 class VerifyCodeForm(forms.Form):
     code = forms.IntegerField()
+
