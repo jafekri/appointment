@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+
+{% block title %} Doctor {% endblock %}
+
+{% block content %}
+        <h3>{{ doctor.user.first_name }} {{ doctor.user.last_name }}<br></h3>
+        specialization__name : {{ doctor.specialization.name }}<br>
+        experience (year) : {{ doctor.experience_year }}<br>
+        visit fee : {{ doctor.visit_fee }}<br>
+        average rating : {{ doctor.average_rating }}<hr>
+        <a href="{% url 'doctor:doctor_list' %}"> All doctor </a><br>
+        <a href="{% url 'doctor:doctor_update' doctor.pk %}" >edit</a> | <a href="{% url 'doctor:doctor_delete' doctor.pk %}">delete</a>
+{%endblock%}
