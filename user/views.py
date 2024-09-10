@@ -53,9 +53,9 @@ class SignUpView(View):
             elif role == 'patient':
                 PatientProfile.objects.create(user=user)
 
-            print("333"*50)
-            print(role)
-            print(form.cleaned_data)
+            # print("333"*50)
+            # print(role)
+            # print(form.cleaned_data)
 
             request.session['user_info'] = {
                 'phone_number': form.cleaned_data['phone'],
