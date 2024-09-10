@@ -2,10 +2,7 @@ from django.conf import settings
 from django.contrib.auth.models import AbstractUser
 from django.core.validators import RegexValidator
 from django.db import models
-# from django.utils.translation import gettext_lazy as _
 
-
-# Create your models here.
 class User(AbstractUser):
     """
        username , password , first_name and last_name
@@ -70,12 +67,10 @@ class DoctorProfile(models.Model):
     )
     specialization = models.ForeignKey(Specialization,
                                          on_delete=models.CASCADE,
-                                         verbose_name="Specialization")
-    experience = models.PositiveIntegerField("Years of Experience")
-    visit_fee = models.DecimalField("Consultation Fee",
-                                    max_digits=10,
-                                    decimal_places=2)
-    #average_rating = models.DecimalField("Rating",max_digits=3,decimal_places=2,default=0)
+                                         verbose_name="Specialization", null=True, blank=True)
+    experience = models.PositiveIntegerField("Years of Experience", default=5)
+    visit_fee = models.PositiveBigIntegerField("Consultation Fee", default=0)
+
 
     def __str__(self):
         return f"Doctor Profile of {self.user.username}"
