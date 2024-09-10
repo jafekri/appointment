@@ -44,7 +44,6 @@ INSTALLED_APPS = [
 
     'sample.apps.SampleConfig',
     'user.apps.UserConfig',
-    'reservation.apps.ReservationConfig',
 ]
 
 AUTH_USER_MODEL = 'user.User'
