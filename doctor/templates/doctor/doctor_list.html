@@ -3,15 +3,24 @@
 {% block title %} Doctor List {% endblock %}
 
 {% block content %}
-<h1>List of Doctors</h1>  <a href="{% url 'doctor:doctor_create' %}"> + Add Doctor</a><br>
+<h1>List of Doctors</h1>
+<div class="row">
+
     {% for doctor in doctor_list %}
-        <h3>{{ doctor.user.first_name }} {{ doctor.user.last_name }}<br></h3>
+    <div class="card col-lg-12" style="width: 18rem; margin:5px;">
+  <div class="card-body">
+    <h5 class="card-title">{{ doctor.user.first_name }} {{ doctor.user.last_name }}</h5>
+    <p class="card-text">
         specialization__name : {{ doctor.specialization.name }}<br>
         experience (year) : {{ doctor.experience_year }}<br>
         visit fee : {{ doctor.visit_fee }}<br>
         average rating : {{ doctor.average_rating }}<br>
-        <a href="{% url 'doctor:doctor_detail' doctor.id %}">Detail page</a><br><hr>
+    </p>
+    <a href="{% url 'doctor:doctor_detail' doctor.id %}" class="btn btn-primary">Detail page</a>
+  </div>
+    </div>
+        {% endfor %}
 
+<!--<a href="{% url 'doctor:doctor_create' %}"> + Add Doctor</a><br>-->
 
-    {% endfor %}
 {%endblock%}
