@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+
+{% block title %} Doctor Create {% endblock %}
+
+{% block content %}
+    Are you sure you want to Delete Dr {{ doctor.user.last_name }}?
+    <form method="post" action="{% url 'doctor:doctor_delete' doctor.pk %}">
+    {% csrf_token %}
+    <button type="submit">Delete</button>
+    </form>
+{%endblock%}
