@@ -23,7 +23,7 @@ from user import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('user/', include('user.urls', namespace='user')),
     path('', include('sample.urls', namespace='sample')),
-    path('signup/', views.signup_view, name='signup'),
     path('doctor/', include('doctor.urls', namespace='doctor')),
 ]
