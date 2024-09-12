@@ -12,59 +12,42 @@ from .forms import CustomUserCreationForm, CustomAuthenticationForm, VerifyCodeF
 from .models import User, DoctorProfile, PatientProfile, Specialization
 from django.contrib import messages
 
-# class SignUpView(CreateView):
-#     form_class = CustomUserCreationForm
-#     template_name = 'user/signup.html'
-#     success_url = reverse_lazy('user:login')
-#
-#     def form_valid(self, form):
-#         response = super().form_valid(form)
-#         user = form.save()
-#         login(self.request, user)
-#         return response
-
-class SignUpView(View):
+class SignUpView(CreateView):
     form_class = CustomUserCreationForm
     template_name = 'user/signup.html'
+    success_url = reverse_lazy('user:verify_code')
 
-    def get(self, request):
-        form = self.form_class
-        return render(request, self.template_name, {'form': form})
+    def form_valid(self, form):
+        code = random.randint(1000, 9999)
+        print(f"code: {code}")
+        form.cleaned_data['otp_code'] = code
+        user = form.save(commit=False)
+        user.otp_code = code
+        user.save()
 
-    def post(self, request):
-        form = self.form_class(request.POST)
-        if form.is_valid():
-            code = random.randint(1000, 9999)
-            print(f"code: {code}")
-            form.cleaned_data['otp_code'] = code
-            user = form.save(commit=False)
-            user.otp_code = code
-            user.save()
+        role = form.cleaned_data.get('role')
+        specialization_name = form.cleaned_data.get('specialization')
+        if role == 'doctor':
+            if specialization_name:
+                specialization, created = Specialization.objects.get_or_create(name=specialization_name)
+                DoctorProfile.objects.create(user=user, specialization=specialization)
+            else:
+                messages.error(self.request, 'Please provide a specialization for the doctor.', 'danger')
+                return self.form_invalid(form)
+        elif role == 'patient':
+            PatientProfile.objects.create(user=user)
 
-            role = form.cleaned_data.get('role')
-            specialization_name = form.cleaned_data.get('specialization')
-            if role == 'doctor':
-                if specialization_name:
-                    specialization, created = Specialization.objects.get_or_create(name=specialization_name)
-                    DoctorProfile.objects.create(user=user, specialization=specialization)
-                else:
-                    messages.error(request, 'Please provide a specialization for the doctor.', 'danger')
-                    return render(request, self.template_name, {'form': form})
-            elif role == 'patient':
-                PatientProfile.objects.create(user=user)
+        self.request.session['user_info'] = {
+            'phone_number': form.cleaned_data['phone'],
+            'username': form.cleaned_data['username'],
+            'password': form.cleaned_data['password1'],
+        }
+        messages.success(self.request, 'We send a Code.', 'success')
+        return super().form_valid(form)
 
-            # print("333"*50)
-            # print(role)
-            # print(form.cleaned_data)
+    def form_invalid(self, form):
+        return self.render_to_response(self.get_context_data(form=form))
 
-            request.session['user_info'] = {
-                'phone_number': form.cleaned_data['phone'],
-                'username': form.cleaned_data['username'],
-                'password': form.cleaned_data['password1'],
-            }
-            messages.success(request, 'We send a Code.', 'success')
-            return redirect('user:verify_code')
-        return render(request, self.template_name, {'form': form})
 
 
 class VerifyCodeView(View):
