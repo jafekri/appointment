@@ -1,8 +1,9 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
-
 from django.core.exceptions import ValidationError
-from .models import User
+from .models import User, Specialization, DoctorProfile
+from django.contrib.auth.forms import PasswordChangeForm
+
 
 class CustomUserCreationForm(UserCreationForm):
     ROLE_CHOICES = [
@@ -50,3 +51,13 @@ class CustomAuthenticationForm(AuthenticationForm):
 class VerifyCodeForm(forms.Form):
     code = forms.IntegerField()
 
+
+class CustomUserChangeForm(forms.ModelForm):
+    class Meta:
+        model = User
+        fields = ['username', 'first_name', 'last_name', 'phone']
+
+
+class CustomPasswordChangeForm(PasswordChangeForm):
+    class Meta:
+        fields = ['old_password', 'new_password1', 'new_password2']
