@@ -5,12 +5,17 @@ from django.utils import timezone
 from django.contrib.auth import login, logout, authenticate
 from django.shortcuts import redirect, render
 from django.views.generic.edit import CreateView
-from django.contrib.auth.views import LoginView
+from django.contrib.auth.views import LoginView,  PasswordChangeView
 from django.urls import reverse_lazy
 from django.views import View
-from .forms import CustomUserCreationForm, CustomAuthenticationForm, VerifyCodeForm
+from .forms import (CustomUserCreationForm, CustomAuthenticationForm,
+                    VerifyCodeForm, CustomUserChangeForm,
+                    CustomPasswordChangeForm,)
 from .models import User, DoctorProfile, PatientProfile, Specialization
 from django.contrib import messages
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.views.generic import TemplateView, UpdateView
+
 
 class SignUpView(CreateView):
     form_class = CustomUserCreationForm
@@ -49,7 +54,6 @@ class SignUpView(CreateView):
         return self.render_to_response(self.get_context_data(form=form))
 
 
-
 class VerifyCodeView(View):
     verify_form = VerifyCodeForm
 
@@ -80,7 +84,7 @@ class VerifyCodeView(View):
                 if user_login:
                     login(request, user_login)
                     messages.success(request, 'You have logged in successfully', 'success')
-                    return redirect('sample:test')
+                    return redirect('user:profile')
             else:
                 messages.error(request, 'Incorrect code', 'danger')
                 return redirect('user:verify_code')
@@ -93,7 +97,7 @@ class CustomLoginView(LoginView):
     template_name = 'user/login.html'
 
     def get_success_url(self):
-        return reverse_lazy('sample:test')
+        return reverse_lazy('user:profile')
 
 
 class LogoutView(View):
@@ -102,3 +106,20 @@ class LogoutView(View):
         return redirect('user:login')
 
 
+class ProfileView(LoginRequiredMixin, TemplateView):
+    template_name = 'user/profile.html'
+
+
+class ProfileUpdateView(LoginRequiredMixin, UpdateView):
+    model = User
+    form_class = CustomUserChangeForm
+    template_name = 'user/profile_edit.html'
+    success_url = reverse_lazy('user:profile')
+
+    def get_object(self):
+        return self.request.user
+
+
+class CustomPasswordChangeView(PasswordChangeView):
+    form_class = CustomPasswordChangeForm
+    success_url = reverse_lazy('user:password_change_done')
