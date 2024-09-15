@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.contrib.admin import register
 
-from user.models import User
+from user.models import User, PatientUser
 
 
 # Register your models here.

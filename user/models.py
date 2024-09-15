@@ -3,6 +3,7 @@ from django.contrib.auth.models import AbstractUser
 from django.core.validators import RegexValidator
 from django.db import models
 # from django.utils.text import slugify
+from django.shortcuts import reverse
 
 
 class User(AbstractUser):
@@ -83,6 +84,9 @@ class DoctorProfile(models.Model):
                                          verbose_name="Specialization", null=True, blank=True)
     experience = models.PositiveIntegerField("Years of Experience", default=5)
     visit_fee = models.PositiveBigIntegerField("Consultation Fee", default=0)
+
+    def get_absolute_url(self):
+        return reverse("doctor:doctor_detail", kwargs={"pk": self.pk})
 
     def __str__(self):
         return f"Doctor Profile of {self.user.username}"

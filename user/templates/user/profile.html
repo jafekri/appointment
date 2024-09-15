@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block extra_headers %}
+<link rel="stylesheet" href="{% static 'home/css/style.css' %}">
+{% endblock %}
+
+{% block title %}Profile{% endblock %}
+
+{% block content %}
+  <h2>Profile Information</h2>
+  {% if request.user.is_authenticated %}
+    <p>Hello {{ request.user.first_name }} {{ request.user.last_name }}</p>
+  {% endif %}
+  <p>Username: {{ request.user.username }}</p>
+  <p>First Name: {{ request.user.first_name }}</p>
+  <p>Last Name: {{ request.user.last_name }}</p>
+  <p>Phone: {{ request.user.phone }}</p>
+
+
+  <a href="{% url 'user:profile_edit' %}">Edit Profile</a>
+{% endblock %}
