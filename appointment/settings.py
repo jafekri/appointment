@@ -44,7 +44,8 @@ INSTALLED_APPS = [
 
     'sample.apps.SampleConfig',
     'user.apps.UserConfig',
-    'doctor.apps.DoctorConfig'
+    'doctor.apps.DoctorConfig',
+    'rating.apps.RatingConfig',
 ]
 
 AUTH_USER_MODEL = 'user.User'

@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% block title %} Doctor Rate {% endblock %}
+{% block content %}
+<h2>Rate Dr. {{ doctor.user.username }}</h2>
+
+<form method="post">
+  {% csrf_token %}
+  {{ form.as_p }}
+  <button type="submit" class="btn btn-primary">Submit Rating</button>
+</form>
+
+<h3>Existing Ratings:</h3>
+<ul>
+  {% for rating in ratings %}
+    <li>{{ rating.user.username }}: {{ rating.rate }} stars on {{ rating.created_at }}</li>
+  {% empty %}
+    <li>No ratings yet.</li>
+  {% endfor %}
+</ul>
+
+{% endblock %}

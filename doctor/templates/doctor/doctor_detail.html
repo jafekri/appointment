@@ -5,11 +5,16 @@
 {% block content %}
         <h3>{{ doctor.user.first_name }} {{ doctor.user.last_name }}<br></h3>
         specialization__name : {{ doctor.specialization.name }}<br>
-        experience (year) : {{ doctor.experience_year }}<br>
-        visit fee : {{ doctor.visit_fee }}<br>
-        average rating : {{ doctor.average_rating }}<hr>
+        experience (year) : {{ doctor.experience }}<br>
+        visit fee : {{ doctor.visit_fee }}<hr>
         <a href="{% url 'doctor:doctor_list' %}"> All doctor </a><br>
 	{% if doctor.user == request.user %}
                 <a href="{% url 'doctor:doctor_update' doctor.pk %}" >edit</a> | <a href="{% url 'doctor:doctor_delete' doctor.pk %}">delete</a>
         {% endif %}
+        <br><br>
+        <div>
+                <a href="{% url 'rating:rating' doctor.id %}" class="btn btn-primary">
+                  Rate Doctor
+                </a>
+        </div>
 {%endblock%}
