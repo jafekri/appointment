@@ -2,6 +2,8 @@ from django.conf import settings
 from django.contrib.auth.models import AbstractUser
 from django.core.validators import RegexValidator
 from django.db import models
+# from django.utils.text import slugify
+
 
 class User(AbstractUser):
     """
@@ -55,6 +57,17 @@ class Specialization(models.Model):
                             unique=True,
                             blank=True)
 
+    # def save(self, *args, **kwargs):
+    #     if not self.slug:
+    #         self.slug = slugify(self.name)
+    #         # Check if the slug already exists
+    #         counter = 1
+    #         original_slug = self.slug
+    #         while Specialization.objects.filter(slug=self.slug).exists():
+    #             self.slug = f"{original_slug}-{counter}"
+    #             counter += 1
+    #     super().save(*args, **kwargs)
+
     def __str__(self):
         return self.name
 
@@ -70,7 +83,6 @@ class DoctorProfile(models.Model):
                                          verbose_name="Specialization", null=True, blank=True)
     experience = models.PositiveIntegerField("Years of Experience", default=5)
     visit_fee = models.PositiveBigIntegerField("Consultation Fee", default=0)
-
 
     def __str__(self):
         return f"Doctor Profile of {self.user.username}"
