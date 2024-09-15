@@ -10,7 +10,7 @@ from django.shortcuts import reverse
 #         on_delete=models.CASCADE,
 #     )
 #     specialization = models.ForeignKey(Specialization, on_delete=models.CASCADE)
-#     experience_year = models.PositiveIntegerField()
+#     experience = models.PositiveIntegerField()
 #     visit_fee = models.PositiveIntegerField()
 #     average_rating = models.DecimalField(max_digits=3,
 #                                          decimal_places=2,
