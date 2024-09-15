@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'user.apps.UserConfig',
     'doctor.apps.DoctorConfig',
     'appointmenttime.apps.AppointmenttimeConfig',
+    'reservation.apps.ReservationConfig',
 ]
 
 AUTH_USER_MODEL = 'user.User'
