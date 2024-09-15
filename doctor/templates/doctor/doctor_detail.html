@@ -9,7 +9,7 @@
         visit fee : {{ doctor.visit_fee }}<br>
         average rating : {{ doctor.average_rating }}<hr>
         <a href="{% url 'doctor:doctor_list' %}"> All doctor </a><br>
-		{% if doctor.user == request.user %}
+	{% if doctor.user == request.user %}
                 <a href="{% url 'doctor:doctor_update' doctor.pk %}" >edit</a> | <a href="{% url 'doctor:doctor_delete' doctor.pk %}">delete</a>
         {% endif %}
 {%endblock%}

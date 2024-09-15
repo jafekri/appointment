@@ -23,6 +23,7 @@ class DoctorDetailView(DetailView):
     model = DoctorProfile
     template_name = "doctor/doctor_detail.html"
     context_object_name = 'doctor'
+    login_url = reverse_lazy('user:login')
 
 
 class DoctorCreateView(LoginRequiredMixin, CreateView):
