@@ -28,13 +28,16 @@ class DoctorDetailView(DetailView):
 class DoctorCreateView(LoginRequiredMixin, CreateView):
     model = DoctorProfile
     template_name = "doctor/doctor_create.html"
-    fields = ['user', 'specialization', 'experience_year', 'visit_fee']
+    fields = ['user', 'specialization', 'experience', 'visit_fee']
+    success_url = reverse_lazy('doctor:doctor_detail')
+    login_url = reverse_lazy('user:login')
 
 
 class DoctorUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = DoctorProfile
     template_name = "doctor/doctor_update.html"
-    fields = ['user', 'specialization', 'experience_year', 'visit_fee']
+    fields = ['user', 'specialization', 'experience', 'visit_fee']
+    login_url = reverse_lazy('user:login')
 
     def test_func(self):
         return self.request.user == self.get_object().user
@@ -45,6 +48,7 @@ class DoctorDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     template_name = "doctor/doctor_delete.html"
     success_url = reverse_lazy("doctor:doctor_list")
     context_object_name = 'doctor'
+    login_url = reverse_lazy('user:login')
 
     def test_func(self):
         return self.request.user == self.get_object().user
