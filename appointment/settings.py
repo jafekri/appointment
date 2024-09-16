@@ -45,6 +45,8 @@ INSTALLED_APPS = [
     'sample.apps.SampleConfig',
     'user.apps.UserConfig',
     'doctor.apps.DoctorConfig',
+    'appointmenttime.apps.AppointmenttimeConfig',
+    'reservation.apps.ReservationConfig',
     'rating.apps.RatingConfig',
 ]
 

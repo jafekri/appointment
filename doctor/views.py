@@ -25,6 +25,10 @@ class DoctorDetailView(DetailView):
     context_object_name = 'doctor'
     login_url = reverse_lazy('user:login')
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['appointments'] = self.object.appointments.all()
+        return context
 
 class DoctorCreateView(LoginRequiredMixin, CreateView):
     model = DoctorProfile
