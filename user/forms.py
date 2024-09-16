@@ -57,6 +57,10 @@ class CustomUserChangeForm(forms.ModelForm):
         model = User
         fields = ['username', 'first_name', 'last_name', 'phone']
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field in self.fields.values():
+            field.widget.attrs.update({'class': 'form-control form-control-lg'})
 
 class CustomPasswordChangeForm(PasswordChangeForm):
     class Meta:
