@@ -1,8 +1,8 @@
 from django.urls import path, include
-from .views import CommentView
+from .views import doctor_comment
 
-app_name = 'rating'
+app_name = 'comment'
 
 urlpatterns = [
-    path('comment/<int:pk>/', CommentView.as_view(), name='comment'),
+    path('<doctor_id>/detail/commnet', doctor_comment, name='doctor_comment'),
 ]

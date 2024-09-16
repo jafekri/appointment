@@ -1,34 +1,27 @@
 {% extends 'base.html' %}
-{% load crispy_forms_tags %}
-{% block title %} Doctor Comments {% endblock %}
+{% load static %}
+{% block title %}Doctor Comment{% endblock %}
+
 {% block content %}
-<div class="card-body">
-<p>{{ doctor.body }}</p>
-<a href="{% url 'doctor_update' article.pk %}">Edit</a> |
-<a href="{% url 'doctor_delete' article.pk %}">Delete</a>
+<div class="container mt-4">
+    {% if comment %}
+        <div class="alert alert-success" role="alert">
+            Your comment was submitted successfully!
+        </div>
+        <a href="{{ doctor.get_absolute_url }}" class="btn btn-primary mt-3">Return to Doctor Profile</a>
+    {% else %}
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title">Submit Your Comment</h5>
+            </div>
+            <div class="card-body">
+                <form method="post">
+                    {% csrf_token %}
+                    {{ form.as_p }}
+                    <button type="submit" class="btn btn-success">Submit</button>
+                </form>
+            </div>
+        </div>
+    {% endif %}
 </div>
-<div class="card-footer">
-{% for comment in comment_set.all %}
-<p>
-<span class="font-weight-bold">
-{{ comment.author }} &middot;
-</span>
-{{ comment }}
-</p>
-{% endfor %}
-</div>
-
-<hr>
-<h4>Comments</h4>
-{% for comment in comment_set.all %}
-<p>{{ comment.author }} &middot; {{ comment }}</p>
-{% endfor %}
-<hr>
-
-<h4>Add a comment</h4>
-<form action="" method="post">{% csrf_token %}
-{{ form|crispy }}
-<button class="btn btn-success ml-2" type="submit">Save</button>
-</form>
-
 {% endblock %}

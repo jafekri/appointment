@@ -3,6 +3,8 @@ from .models import Comment
 
 
 class CommentForm(forms.ModelForm):
+    # def clean_name(self):
+
     class Meta:
         model = Comment
-        fields = ("comment", "author")
+        fields = ["author", 'body']

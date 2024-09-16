@@ -6,6 +6,7 @@ from django.urls import reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.mixins import UserPassesTestMixin
 
+from comment.forms import CommentForm
 from user.models import DoctorProfile
 
 
@@ -24,6 +25,17 @@ class DoctorDetailView(DetailView):
     template_name = "doctor/doctor_detail.html"
     context_object_name = 'doctor'
     login_url = reverse_lazy('user:login')
+    pk_url_kwarg = 'pk'
+
+    def get_context_data(self, **kwargs):
+        doctor = self.object
+        context = super().get_context_data(**kwargs)
+        context['appointments'] =doctor.appointments.all()
+        context['rating_form'] = self.form_class()
+        context['average_rating'] = doctor.average_rating()
+        context['comments'] = self.object.comments.filter(activate=True)
+        context['form'] = CommentForm()
+        return context
 
 
 class DoctorCreateView(LoginRequiredMixin, CreateView):

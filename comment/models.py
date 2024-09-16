@@ -1,34 +1,31 @@
-from appointment import settings
 from django.db import models
-from django.urls import reverse
-from user.models import DoctorProfile
-from reservation.models import Reservation
 
+from appointment import settings
+from user.models import DoctorProfile
 
 
 # Create your models here.
 class Comment(models.Model):
-    reservation = models.ForeignKey(
-        Reservation,
+    doctor = models.ForeignKey(
+        DoctorProfile,
         on_delete=models.CASCADE,
-        related_name='reservation_comments',
+        related_name='comments',
     )
-    comment = models.TextField(max_length=500)
     author = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
         related_name='user_comments',
     )
-    doctor = models.ForeignKey(
-        DoctorProfile,
-        on_delete=models.CASCADE,
-        related_name='doctor_comments',
-    )
+    body = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    activate = models.BooleanField(default=False)
+
+    class Meta:
+        ordering = ['created_at']
+        indexes = [
+            models.Index(fields=['created_at']),
+        ]
 
     def __str__(self):
-        return self.comment
-
-    def get_absolute_url(self):
-        return reverse("comment_list")
+        return f"{self.author}: {self.doctor}"
