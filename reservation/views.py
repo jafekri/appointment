@@ -23,90 +23,18 @@ class ReservationCreateView(LoginRequiredMixin, CreateView):
 
     def form_valid(self, form):
         appointment = get_object_or_404(Appointment, id=self.kwargs['pk'])
-
-        if appointment.status is False:
-            messages.error(self.request, "This appointment is no longer available.")
-            return redirect('doctor:doctor_detail', appointment.doctor.user.id)
-
-        user = self.request.user
-
-        doctor = appointment.doctor
-        print("dd" * 50)
-        print(doctor)
-        print(doctor.visit_fee)
-        print(doctor.id)
-        visit_fee = doctor.visit_fee
-
-        # Fetch or create PatientProfile instance
-        patient_profile = PatientProfile.objects.get_or_create(user=user)
-        print("ppp" * 50)
-        print(patient_profile)
-        print(patient_profile.user.balance)
-        doctor_profile = DoctorProfile.objects.get(pk=doctor.id)
-        print("zzzz"*50)
-        print(doctor_profile)
-
-        # Check if the user has enough balance
-        # if user.balance < visit_fee:
-        #     messages.error(self.request, "Insufficient balance.")
-        #     return redirect('doctor:doctor_detail', appointment.doctor.user.id)
-
-        # Update user's balance
-        if  patient_profile.user.balance > visit_fee:
-            patient_profile.user.balance -= visit_fee
-            patient_profile.user.save()
-
-        print("dd" * 50)
-        print(patient_profile.user.balance)
-        # Update doctor's balance
-        doctor_profile.user.balance += visit_fee
-        doctor_profile.user.save()
-        print("ccc"*50)
-        print(doctor.user.balance)
-        # Update appointment status
-        appointment.status = False
-        appointment.save()
-
-        # Create and save Reservation
-        reservation = form.save(commit=False)
-        reservation.patient = patient_profile
-        reservation.doctor = doctor_profile
-        reservation.appointment = appointment
-        reservation.visit_fee = visit_fee
-        reservation.payment_status = True
-        reservation.save()
-
-        # Success message
-        messages.success(self.request, "Payment successful.")
-
-        return redirect('doctor:doctor_detail', appointment.doctor.user.id)
-
-    def form_valid(self, form):
-        appointment = get_object_or_404(Appointment, id=self.kwargs['pk'])
         doctor = appointment.doctor
         doctor_profile = DoctorProfile.objects.get(pk=doctor.id)
         if appointment.status is False:
-            print("ssss" * 50)
-            print(doctor_profile.id)
+
             messages.warning(self.request, "This appointment is no longer available.", 'error')
             return redirect('doctor:doctor_detail', doctor_profile.id)
 
         user = self.request.user
-
-
-        print("dd" * 50)
-        print(doctor)
-        print(doctor.visit_fee)
-        print(doctor.id)
         visit_fee = doctor.visit_fee
 
         # Fetch or create PatientProfile instance
         patient_profile, created = PatientProfile.objects.get_or_create(user=user)
-        print("ppp" * 50)
-        print(patient_profile)
-        print(patient_profile.user.balance)
-
-
 
         # Check if the user has enough balance
         # if user.balance < visit_fee:
@@ -118,9 +46,6 @@ class ReservationCreateView(LoginRequiredMixin, CreateView):
             patient_profile.user.balance -= visit_fee
             patient_profile.user.save()
 
-        print("dd" * 50)
-        print(visit_fee)
-        print(patient_profile.user.balance)
         # Update doctor's balance
         doctor_profile.user.balance += visit_fee
         doctor_profile.user.save()
@@ -140,8 +65,6 @@ class ReservationCreateView(LoginRequiredMixin, CreateView):
 
         # Success message
         messages.success(self.request, "Payment successful.")
-        print("ssss" * 50)
-        print(doctor_profile.user.id)
         return redirect('doctor:doctor_detail', doctor_profile.id)
 
 
