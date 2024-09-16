@@ -4,6 +4,8 @@ from django.core.validators import RegexValidator
 from django.db import models
 # from django.utils.text import slugify
 from django.shortcuts import reverse
+from django.apps import apps
+from django.db.models import Avg
 
 
 class User(AbstractUser):
@@ -89,6 +91,10 @@ class DoctorProfile(models.Model):
 
     def __str__(self):
         return f"Doctor Profile of {self.user.username}"
+
+    def average_rating(self):
+        Rating = apps.get_model('rating', 'Rating')
+        return Rating.objects.filter(doctor=self).aggregate(Avg('rate'))['rate__avg'] or 0
 
 
 class PatientProfile(models.Model):
