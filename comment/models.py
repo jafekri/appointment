@@ -1,25 +1,26 @@
 from appointment import settings
 from django.db import models
 from django.urls import reverse
-from user.models import DoctorUser
-# from reservation.models import Reservation
+from user.models import DoctorProfile
+from reservation.models import Reservation
 
 
 
 # Create your models here.
 class Comment(models.Model):
-    # reservation = models.ForeignKey(
-    #     Reservation,
-    #     on_delete=models.CASCADE,
-    # )
-    comment = models.CharField(max_length=200)
+    reservation = models.ForeignKey(
+        Reservation,
+        on_delete=models.CASCADE,
+        related_name='reservation_comments',
+    )
+    comment = models.TextField(max_length=500)
     author = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
         related_name='user_comments',
     )
     doctor = models.ForeignKey(
-        DoctorUser,
+        DoctorProfile,
         on_delete=models.CASCADE,
         related_name='doctor_comments',
     )
