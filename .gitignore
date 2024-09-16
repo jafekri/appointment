@@ -127,7 +127,7 @@ venv
 .venv
 .env/
 venv/
-.env/
+.env
 env.bak/
 venv.bak/
 
@@ -167,3 +167,5 @@ cython_debug/
 *.pyc
 *.sqlite3
 local_*.py
+.env
+env

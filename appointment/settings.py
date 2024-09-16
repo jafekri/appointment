@@ -18,19 +18,19 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 env = environ.Env(
     DEBUG=(bool, False)
 )
-env.read_env(env.str('ENV_PATH', default=os.path.join(BASE_DIR, 'venv')))
+env.read_env(env.str('ENV_PATH', default=os.path.join(BASE_DIR, '.env')))
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = env('DJANGO_SECRET_KEY')
-# print("DJANGO_SECRET_KEY:", .env('DJANGO_SECRET_KEY'))
+# print("DJANGO_SECRET_KEY:", env('DJANGO_SECRET_KEY'))
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 ALLOWED_HOSTS = ['0.0.0.0', 'localhost', '127.0.0.1']
-# ALLOWED_HOSTS = .env.list('ALLOWED_HOSTS')
-# print("DJANGO_SECRET_KEY:", .env('ALLOWED_HOSTS'))
+# ALLOWED_HOSTS = env.list('ALLOWED_HOSTS')
+# print("DJANGO_SECRET_KEY:", env('ALLOWED_HOSTS'))
 
 # Application definition
 
