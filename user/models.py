@@ -1,4 +1,5 @@
 from django.conf import settings
+from django.contrib.auth.base_user import BaseUserManager
 from django.contrib.auth.models import AbstractUser
 from django.core.validators import RegexValidator
 from django.db import models
@@ -112,7 +113,7 @@ class DoctorUser(User):
     class Meta:
         proxy = True
 
-    class DoctorManager(models.Manager):
+    class DoctorManager(BaseUserManager):
         def get_queryset(self):
             return super().get_queryset().filter(doctorprofile__isnull=False)
 
@@ -127,7 +128,7 @@ class PatientUser(User):
     class Meta:
         proxy = True
 
-    class PatientManager(models.Manager):
+    class PatientManager(BaseUserManager):
         def get_queryset(self):
             return super().get_queryset().filter(patientprofile__isnull=False)
 

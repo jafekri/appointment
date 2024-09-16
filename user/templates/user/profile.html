@@ -27,6 +27,14 @@
                 <div>
                   <p class="small text-muted mb-1">Phone</p>
                   <p class="mb-0">{{ request.user.phone }}</p>
+
+
+                </div>
+                <div style="margin-left:50px;">
+                 <p class="small text-muted mb-1 ml-5">Role</p>
+                  <p class="mb-0">{{ request.user.get_role }}</p>
+
+
                 </div>
 
               </div>

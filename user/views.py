@@ -32,10 +32,11 @@ class SignUpView(CreateView):
 
         role = form.cleaned_data.get('role')
         specialization_name = form.cleaned_data.get('specialization')
+        visit_fee = form.cleaned_data.get('consultation_fee')
         if role == 'doctor':
             if specialization_name:
                 specialization, created = Specialization.objects.get_or_create(name=specialization_name)
-                DoctorProfile.objects.create(user=user, specialization=specialization)
+                DoctorProfile.objects.create(user=user, specialization=specialization, visit_fee=visit_fee)
             else:
                 messages.error(self.request, 'Please provide a specialization for the doctor.', 'danger')
                 return self.form_invalid(form)
@@ -103,7 +104,8 @@ class CustomLoginView(LoginView):
 class LogoutView(View):
     def get(self, request):
         logout(request)
-        return redirect('user:login')
+        messages.success(request, 'you log out successfully')
+        return render('doctor:doctor_list')
 
 
 class ProfileView(LoginRequiredMixin, TemplateView):

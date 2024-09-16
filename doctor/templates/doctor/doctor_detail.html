@@ -36,7 +36,9 @@
                 <p class="text-muted mb-0">status:{{ appointment.status|yesno:"Available,Not Available" }}</p>
               </div>
                   <div class="col-sm-2">
+                        {% if request.user.is_authenticated and request.user.id != doctor.user.id  %}
                 <p class="text-muted mb-0"><a href="{% url 'reservation:make_reservation' appointment.id %}" class="btn btn-primary">reserve</a></p>
+                      {% endif %}
               </div>
             </div>
             <hr>
@@ -46,6 +48,7 @@
               <div class="col-sm-3">
                 <p class="mb-0">Rate</p>
               </div>
+                {% if request.user.is_authenticated and request.user.id != doctor.user.id  %}
               <div class="col-sm-9">
                 <form method="post" action="{%url 'rating:rating' doctor.id %}">
                           {% csrf_token %}
@@ -53,10 +56,9 @@
                          <div class="col-sm-4"> {{ rating_form.rate }}</div>
                     <div class="col-sm-4"> <button type="submit" class="btn btn-primary">Submit Rating</button></div>
                     </div>
-
-
                 </form>
               </div>
+                {% endif %}
             </div>
             <hr>
               
