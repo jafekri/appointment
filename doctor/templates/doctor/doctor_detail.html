@@ -47,7 +47,7 @@
                 <p class="mb-0">Rate</p>
               </div>
               <div class="col-sm-9">
-                <form method="post" action="{%url 'rating:rating' doctor.user.id %}">
+                <form method="post" action="{%url 'rating:rating' doctor.id %}">
                           {% csrf_token %}
                     <div class="row">
                          <div class="col-sm-4"> {{ rating_form.rate }}</div>

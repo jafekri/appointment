@@ -52,7 +52,10 @@
 
         <div class="d-flex justify-content-end">
 
-          <button  type="button" data-mdb-button-init data-mdb-ripple-init class="btn btn-primary btn-lg">Pay</button>
+            <form action="{% url 'reservation:make_reservation' appointment.id %}" method="post">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-primary btn-lg">Pay</button>
+            </form>
         </div>
 
       </div>
