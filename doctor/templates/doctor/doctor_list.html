@@ -12,9 +12,8 @@
     <h5 class="card-title">{{ doctor.user.first_name }} {{ doctor.user.last_name }}</h5>
     <p class="card-text">
         specialization__name : {{ doctor.specialization.name }}<br>
-        experience (year) : {{ doctor.experience_year }}<br>
+        experience (year) : {{ doctor.experience }}<br>
         visit fee : {{ doctor.visit_fee }}<br>
-        average rating : {{ doctor.average_rating }}<br>
     </p>
     <a href="{% url 'doctor:doctor_detail' doctor.id %}" class="btn btn-primary">Detail page</a>
   </div>
