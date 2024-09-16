@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+
+{% block title %}Reservation Details{% endblock %}
+
+{% block content %}
+<section class="vh-100" style="background-color: #fdccbc;">
+  <div class="container h-100">
+    <div class="row d-flex justify-content-center align-items-center h-100">
+      <div class="col">
+        <p><span class="h2">Reservation</span></p>
+
+        <div class="card mb-4">
+          <div class="card-body p-4">
+
+            <div class="row align-items-center">
+
+              <div class="col-md-2 d-flex justify-content-center">
+                <div>
+                  <p class="small text-muted mb-4 pb-2">Doctor</p>
+                  <p class="lead fw-normal mb-0">{{ appointment.doctor.user.first_name }} {{ appointment.doctor.user.last_name }}</p>
+                </div>
+              </div>
+              <div class="col-md-2 d-flex justify-content-center">
+                <div>
+                  <p class="small text-muted mb-4 pb-2">Date</p>
+                  <p class="lead fw-normal mb-0">
+                    {{ appointment.date }}</p>
+                </div>
+              </div>
+              <div class="col-md-2 d-flex justify-content-center">
+                <div>
+                  <p class="small text-muted mb-4 pb-2">Time</p>
+                  <p class="lead fw-normal mb-0">{{ appointment.start_time }} - {{ appointment.end_time }}</p>
+                </div>
+              </div>
+              <div class="col-md-2 d-flex justify-content-center">
+                <div>
+                  <p class="small text-muted mb-4 pb-2">Fee</p>
+                  <p class="lead fw-normal mb-0"> {{ appointment.doctor.visit_fee }}</p>
+                </div>
+              </div>
+              <div class="col-md-2 d-flex justify-content-center">
+                <div>
+                  <p class="small text-muted mb-4 pb-2">status</p>
+                  <p class="lead fw-normal mb-0"> {{ reservation.payment_status|yesno:"Paid,Unpaid" }}</p>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <div class="d-flex justify-content-end">
+
+          <button  type="button" data-mdb-button-init data-mdb-ripple-init class="btn btn-primary btn-lg">Pay</button>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}
