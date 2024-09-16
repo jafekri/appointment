@@ -55,7 +55,6 @@ class Specialization(models.Model):
     name = models.CharField("Specialization Name",
                             max_length=100)
     slug = models.SlugField("Slug",
-                            unique=True,
                             blank=True)
 
     # def save(self, *args, **kwargs):

@@ -18,19 +18,19 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 env = environ.Env(
     DEBUG=(bool, False)
 )
-env.read_env(env.str('ENV_PATH', default=os.path.join(BASE_DIR, '.env')))
+env.read_env(env.str('ENV_PATH', default=os.path.join(BASE_DIR, 'venv')))
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = env('DJANGO_SECRET_KEY')
-# print("DJANGO_SECRET_KEY:", env('DJANGO_SECRET_KEY'))
+# print("DJANGO_SECRET_KEY:", .env('DJANGO_SECRET_KEY'))
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 ALLOWED_HOSTS = ['0.0.0.0', 'localhost', '127.0.0.1']
-# ALLOWED_HOSTS = env.list('ALLOWED_HOSTS')
-# print("DJANGO_SECRET_KEY:", env('ALLOWED_HOSTS'))
+# ALLOWED_HOSTS = .env.list('ALLOWED_HOSTS')
+# print("DJANGO_SECRET_KEY:", .env('ALLOWED_HOSTS'))
 
 # Application definition
 
@@ -44,7 +44,8 @@ INSTALLED_APPS = [
 
     'sample.apps.SampleConfig',
     'user.apps.UserConfig',
-    'doctor.apps.DoctorConfig'
+    'doctor.apps.DoctorConfig',
+    'rating.apps.RatingConfig',
 ]
 
 AUTH_USER_MODEL = 'user.User'
@@ -88,11 +89,11 @@ WSGI_APPLICATION = 'appointment.wsgi.application'
 #         # 'ENGINE': 'django.db.backends.sqlite3',
 #         # 'NAME': BASE_DIR / 'db.sqlite3',
 #         'ENGINE': 'django.db.backends.postgresql',
-#         'NAME': env('DB_NAME', default='appointment'),
-#         'USER': env('DB_USER', default='appointment'),
-#         'PASSWORD': env('DB_PASSWORD', default='appointment'),
-#         'HOST': env('DB_HOST', default='localhost'),
-#         'PORT': env('DB_PORT', default='5432'),
+#         'NAME': .env('DB_NAME', default='appointment'),
+#         'USER': .env('DB_USER', default='appointment'),
+#         'PASSWORD': .env('DB_PASSWORD', default='appointment'),
+#         'HOST': .env('DB_HOST', default='localhost'),
+#         'PORT': .env('DB_PORT', default='5432'),
 #     }
 # }
 DATABASES = {
