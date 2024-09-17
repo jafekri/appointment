@@ -5,10 +5,11 @@
         <li class="nav-item">
           <a class="nav-link " aria-current="page" href="{% url 'doctor:doctor_list' %}">Home</a>
         </li>
+        {% if request.user.is_authenticated %}
         <li class="nav-item">
           <a class="nav-link {% if request.resolver_match.url_name == 'profile' %}active{% endif %}" href="{% url 'user:profile' %}">Profile</a>
         </li>
-        {% if request.user.is_authenticated %}
+
          <li class="nav-item">
           <a class="nav-link" href="{% url 'user:logout' %}">logout</a>
         </li>
