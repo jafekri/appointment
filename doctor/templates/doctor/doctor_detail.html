@@ -4,6 +4,17 @@
 
 {% block content %}
 
+        <h3>{{ doctor.user.first_name }} {{ doctor.user.last_name }}<br></h3>
+        specialization__name : {{ doctor.specialization.name }}<br>
+        experience (year) : {{ doctor.experience_year }}<br>
+        visit fee : {{ doctor.visit_fee }}<br>
+        average rating : {{ doctor.average_rating }}<hr>
+        <a href="{% url 'doctor:doctor_list' %}"> All doctor </a><br>
+	{% if doctor.user == request.user %}
+                <a href="{% url 'doctor:doctor_update' doctor.pk %}" >edit</a> | <a href="{% url 'doctor:doctor_delete' doctor.pk %}">delete</a>
+        {% endif %}
+    
+
 <section style="background-color: #eee;">
   <div class="container py-5">
 
@@ -74,4 +85,32 @@
 <!--                  Rate Doctor-->
 <!--                </a>-->
 <!--        </div>-->
+<div class="mb-3">
+    {% with comments.count as cm_count %}
+        <h5>{{ cm_count }} comment{{ cm_count|pluralize }} found:</h5>
+        <hr class="my-3">
+    {% endwith %}
+</div>
+
+<div class="mb-4">
+    {% for cm in comments %}
+        <div class="card mb-3">
+            <div class="card-body">
+                <p class="card-text">{{ cm.body|linebreaks }}</p>
+                <p class="text-muted small mb-0">by: {{ cm.author }}</p>
+            </div>
+        </div>
+    {% empty %}
+        <p class="text-muted">No comment yet!</p>
+    {% endfor %}
+</div>
+
+<form method="post" action="{% url 'comment:doctor_comment' doctor.id %}">
+    {% csrf_token %}
+    <div class="mb-3">
+        {{ form.as_p }}
+    </div>
+    <button type="submit" class="btn btn-primary">Submit</button>
+</form>
+
 {%endblock%}
