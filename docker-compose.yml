@@ -2,9 +2,9 @@ services:
   db:
     image: postgres
     environment:
-      - POSTGRES_USER=tutorial
-      - POSTGRES_PASSWORD=tutorial
-      - POSTGRES_DB=tutorial
+      - POSTGRES_USER=appointment
+      - POSTGRES_PASSWORD=appointment
+      - POSTGRES_DB=appointment
     ports:
       - "127.0.0.1:5433:5432"
   web:
