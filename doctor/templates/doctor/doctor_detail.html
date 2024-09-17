@@ -69,11 +69,6 @@
   </div>
 </section>
 
-<!--        <div>-->
-<!--                <a href="{% url 'rating:rating' doctor.id %}" class="btn btn-primary">-->
-<!--                  Rate Doctor-->
-<!--                </a>-->
-<!--        </div>-->
     <div class="mb-3">
     {% with comments.count as cm_count %}
         <h5>{{ cm_count }} comment{{ cm_count|pluralize }}</h5>

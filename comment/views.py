@@ -1,39 +1,32 @@
-from django.urls import reverse, reverse_lazy
-from django.views.generic import FormView
-from django.contrib import messages
+from django.urls import reverse_lazy
+from django.views.generic.edit import FormView
+from django.shortcuts import get_object_or_404
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 from comment.forms import CommentForm
+from rating.forms import RatingForm
 from user.models import DoctorProfile
 
-
-class DoctorCommentView(FormView):
-    template_name = "doctor/doctor_detail.html"
+class DoctorCommentView(LoginRequiredMixin, FormView):
     form_class = CommentForm
-
-    # def get_success_url(self):
-    #     doctor = DoctorProfile.objects.get(pk=self.kwargs['pk'])
-    #     return reverse('doctor:doctor_detail', kwargs={'pk': doctor.id})
-        # return doctor.get_absolute_url()
-    # def get_success_url(self):
-    #     doctor_pk = self.kwargs['pk']
-    #     print("ssss"*50)
-    #     print(doctor_pk)
-    #     return reverse_lazy('doctor:doctor_detail', kwargs={'pk': doctor_pk})
+    template_name = "doctor/doctor_detail.html"  # You can use the same template or create a separate one
+    def get_success_url(self):
+        doctor = DoctorProfile.objects.get(pk=self.kwargs['pk'])
+        return doctor.get_absolute_url()
 
     def form_valid(self, form):
-        doctor = DoctorProfile.objects.get(pk=self.kwargs['pk'])
+        doctor = get_object_or_404(DoctorProfile, pk=self.kwargs['pk'])
         comment = form.save(commit=False)
         comment.doctor = doctor
         comment.author = self.request.user
         comment.save()
-
-        messages.success(self.request, "Your comment has been posted successfully!")
-        doctor = DoctorProfile.objects.get(pk=self.kwargs['pk'])
-        return reverse('doctor:doctor_detail', kwargs={'pk': doctor.id})
-        # return super().form_valid(form)
+        return super().form_valid(form)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        print("Doctor PK:", self.kwargs.get('pk'))
-        context['form'] = self.get_form()
+        context['doctor'] = get_object_or_404(DoctorProfile, pk=self.kwargs['pk'])
+        context['appointments'] = context['doctor'].appointments.all()
+        context['rating_form'] = RatingForm()
+        context['average_rating'] = context['doctor'].average_rating()
+        context['comments'] = context['doctor'].comments.filter(activate=True)
         return context
