@@ -45,6 +45,9 @@ INSTALLED_APPS = [
     'sample.apps.SampleConfig',
     'user.apps.UserConfig',
     'doctor.apps.DoctorConfig',
+    'appointmenttime.apps.AppointmenttimeConfig',
+    'reservation.apps.ReservationConfig',
+    'rating.apps.RatingConfig',
     'comment.apps.CommentConfig',
 ]
 
@@ -89,11 +92,11 @@ WSGI_APPLICATION = 'appointment.wsgi.application'
 #         # 'ENGINE': 'django.db.backends.sqlite3',
 #         # 'NAME': BASE_DIR / 'db.sqlite3',
 #         'ENGINE': 'django.db.backends.postgresql',
-#         'NAME': env('DB_NAME', default='appointment'),
-#         'USER': env('DB_USER', default='appointment'),
-#         'PASSWORD': env('DB_PASSWORD', default='appointment'),
-#         'HOST': env('DB_HOST', default='localhost'),
-#         'PORT': env('DB_PORT', default='5432'),
+#         'NAME': .env('DB_NAME', default='appointment'),
+#         'USER': .env('DB_USER', default='appointment'),
+#         'PASSWORD': .env('DB_PASSWORD', default='appointment'),
+#         'HOST': .env('DB_HOST', default='localhost'),
+#         'PORT': .env('DB_PORT', default='5432'),
 #     }
 # }
 DATABASES = {

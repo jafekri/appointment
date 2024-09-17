@@ -3,6 +3,7 @@
 {% block title %} Doctor {% endblock %}
 
 {% block content %}
+
         <h3>{{ doctor.user.first_name }} {{ doctor.user.last_name }}<br></h3>
         specialization__name : {{ doctor.specialization.name }}<br>
         experience (year) : {{ doctor.experience_year }}<br>
@@ -12,7 +13,79 @@
 	{% if doctor.user == request.user %}
                 <a href="{% url 'doctor:doctor_update' doctor.pk %}" >edit</a> | <a href="{% url 'doctor:doctor_delete' doctor.pk %}">delete</a>
         {% endif %}
-    <div class="mb-3">
+    
+
+<section style="background-color: #eee;">
+  <div class="container py-5">
+
+
+    <div class="row">
+      <div class="col-lg-4">
+        <div class="card mb-4">
+          <div class="card-body text-center">
+            <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava3.webp" alt="avatar"
+              class="rounded-circle img-fluid" style="width: 150px;">
+            <h5 class="my-3">{{ doctor.user.first_name }} {{ doctor.user.last_name }}</h5>
+            <p class="text-muted mb-1">specialize: {{ doctor.specialization.name }} | experience:{{ doctor.experience_year|default:"0" }}</p>
+            <p class="text-muted mb-4">fee: {{ doctor.visit_fee }} | rate:  {{ average_rating|floatformat:1 }}</p>
+
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-8">
+        <div class="card mb-4">
+          <div class="card-body">
+              {% for appointment in appointments %}
+              <div class="row">
+              <div class="col-sm-4">
+                <p class="mb-0">date: {{appointment.date}} </p>
+              </div>
+              <div class="col-sm-4">
+                <p class="text-muted mb-0">time:  {{appointment.start_time}} - {{appointment.end_time}}</p>
+              </div>
+                  <div class="col-sm-2">
+                <p class="text-muted mb-0">status:{{ appointment.status|yesno:"Available,Not Available" }}</p>
+              </div>
+                  <div class="col-sm-2">
+                        {% if request.user.is_authenticated and request.user.id != doctor.user.id  %}
+                <p class="text-muted mb-0"><a href="{% url 'reservation:make_reservation' appointment.id %}" class="btn btn-primary">reserve</a></p>
+                      {% endif %}
+              </div>
+            </div>
+            <hr>
+              {% endfor %}
+
+            <div class="row">
+              <div class="col-sm-3">
+                <p class="mb-0">Rate</p>
+              </div>
+                {% if request.user.is_authenticated and request.user.id != doctor.user.id  %}
+              <div class="col-sm-9">
+                <form method="post" action="{%url 'rating:rating' doctor.id %}">
+                          {% csrf_token %}
+                    <div class="row">
+                         <div class="col-sm-4"> {{ rating_form.rate }}</div>
+                    <div class="col-sm-4"> <button type="submit" class="btn btn-primary">Submit Rating</button></div>
+                    </div>
+                </form>
+              </div>
+                {% endif %}
+            </div>
+            <hr>
+              
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!--        <div>-->
+<!--                <a href="{% url 'rating:rating' doctor.id %}" class="btn btn-primary">-->
+<!--                  Rate Doctor-->
+<!--                </a>-->
+<!--        </div>-->
+<div class="mb-3">
     {% with comments.count as cm_count %}
         <h5>{{ cm_count }} comment{{ cm_count|pluralize }} found:</h5>
         <hr class="my-3">
@@ -39,4 +112,5 @@
     </div>
     <button type="submit" class="btn btn-primary">Submit</button>
 </form>
+
 {%endblock%}

@@ -1,3 +1,5 @@
+from email.policy import default
+
 from django import forms
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.core.exceptions import ValidationError
@@ -15,7 +17,9 @@ class CustomUserCreationForm(UserCreationForm):
     password1 = forms.CharField(label='password', widget=forms.PasswordInput)
     password2 = forms.CharField(label='confirm password', widget=forms.PasswordInput)
     role = forms.ChoiceField(choices=ROLE_CHOICES, required=True)
-    specialization = forms.CharField(required=False)
+    specialization = forms.ModelChoiceField(queryset=Specialization.objects.all(), required=False)
+    consultation_fee = forms.IntegerField()
+
 
     class Meta:
         model = User
@@ -26,12 +30,14 @@ class CustomUserCreationForm(UserCreationForm):
                   'password1',
                   'password2',
                    'role',
-                  'specialization')
+                  'specialization',
+                  'consultation_fee',)
 
         def __init__(self, *args, **kwargs):
             super().__init__(*args, **kwargs)
             if self.data.get('role') == 'doctor':
                 self.fields['specialization'].required = True  # فیلد تخصص را اجباری می‌کنیم
+                self.fields['consultation_fee'].required = True  # فیلد تخصص را اجباری می‌کنیم
             else:
                 self.fields['specialization'].widget = forms.HiddenInput()  # مخفی کردن فیلد تخصص برای نقش‌های دیگر
     def clean_password2(self):
@@ -57,6 +63,10 @@ class CustomUserChangeForm(forms.ModelForm):
         model = User
         fields = ['username', 'first_name', 'last_name', 'phone']
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field in self.fields.values():
+            field.widget.attrs.update({'class': 'form-control form-control-lg'})
 
 class CustomPasswordChangeForm(PasswordChangeForm):
     class Meta:

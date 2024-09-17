@@ -1,9 +1,12 @@
 from django.conf import settings
+from django.contrib.auth.base_user import BaseUserManager
 from django.contrib.auth.models import AbstractUser
 from django.core.validators import RegexValidator
 from django.db import models
 # from django.utils.text import slugify
 from django.shortcuts import reverse
+from django.apps import apps
+from django.db.models import Avg
 
 
 class User(AbstractUser):
@@ -55,7 +58,6 @@ class Specialization(models.Model):
     name = models.CharField("Specialization Name",
                             max_length=100)
     slug = models.SlugField("Slug",
-                            unique=True,
                             blank=True)
 
     # def save(self, *args, **kwargs):
@@ -91,6 +93,10 @@ class DoctorProfile(models.Model):
     def __str__(self):
         return f"Doctor Profile of {self.user.username}"
 
+    def average_rating(self):
+        Rating = apps.get_model('rating', 'Rating')
+        return Rating.objects.filter(doctor=self).aggregate(Avg('rate'))['rate__avg'] or 0
+
 
 class PatientProfile(models.Model):
     user = models.OneToOneField(
@@ -107,7 +113,7 @@ class DoctorUser(User):
     class Meta:
         proxy = True
 
-    class DoctorManager(models.Manager):
+    class DoctorManager(BaseUserManager):
         def get_queryset(self):
             return super().get_queryset().filter(doctorprofile__isnull=False)
 
@@ -122,7 +128,7 @@ class PatientUser(User):
     class Meta:
         proxy = True
 
-    class PatientManager(models.Manager):
+    class PatientManager(BaseUserManager):
         def get_queryset(self):
             return super().get_queryset().filter(patientprofile__isnull=False)
 
