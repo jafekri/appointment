@@ -11,14 +11,13 @@ class CustomUserCreationForm(UserCreationForm):
     ROLE_CHOICES = [
         ('doctor', 'Doctor'),
         ('patient', 'Patient'),
-        ('admin', 'Admin'),
     ]
 
     password1 = forms.CharField(label='password', widget=forms.PasswordInput)
     password2 = forms.CharField(label='confirm password', widget=forms.PasswordInput)
     role = forms.ChoiceField(choices=ROLE_CHOICES, required=True)
     specialization = forms.ModelChoiceField(queryset=Specialization.objects.all(), required=False)
-    consultation_fee = forms.IntegerField()
+    consultation_fee = forms.IntegerField(required=False)
 
 
     class Meta:
@@ -36,8 +35,8 @@ class CustomUserCreationForm(UserCreationForm):
         def __init__(self, *args, **kwargs):
             super().__init__(*args, **kwargs)
             if self.data.get('role') == 'doctor':
-                self.fields['specialization'].required = True  # فیلد تخصص را اجباری می‌کنیم
-                self.fields['consultation_fee'].required = True  # فیلد تخصص را اجباری می‌کنیم
+                self.fields['specialization'].required = True
+                self.fields['consultation_fee'].required = True
             else:
                 self.fields['specialization'].widget = forms.HiddenInput()  # مخفی کردن فیلد تخصص برای نقش‌های دیگر
     def clean_password2(self):
