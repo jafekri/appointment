@@ -105,7 +105,7 @@ class LogoutView(View):
     def get(self, request):
         logout(request)
         messages.success(request, 'you log out successfully')
-        return render('doctor:doctor_list')
+        return render(request,'base.html')
 
 
 class ProfileView(LoginRequiredMixin, TemplateView):
