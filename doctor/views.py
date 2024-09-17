@@ -56,17 +56,7 @@ class DoctorDetailView(DetailView):
         context['comments'] = self.object.comments.filter(activate=True)
         context['form'] = CommentForm()
         return context
-
     form_class = RatingForm
-
-
-    def get_context_data(self, **kwargs):
-        doctor = self.object
-        context = super().get_context_data(**kwargs)
-        context['appointments'] =doctor.appointments.all()
-        context['rating_form'] = self.form_class()
-        context['average_rating'] = doctor.average_rating()
-        return context
 
 class DoctorCreateView(LoginRequiredMixin, CreateView):
     model = DoctorProfile
