@@ -1,3 +1,8 @@
+version: "3.8"
+
+volumes:
+  appointment_db:
+
 services:
   db:
     image: postgres
@@ -5,19 +10,18 @@ services:
       - POSTGRES_USER=appointment
       - POSTGRES_PASSWORD=appointment
       - POSTGRES_DB=appointment
-    ports:
-      - "127.0.0.1:5433:5432"
+    volumes:
+      - appointment_db:/var/lib/postgresql/data/
   web:
     build: .
     restart: always
-    command: python manage.py runserver 0.0.0.0:8000
+    command: bash -c "python manage.py migrate 
+      && python manage.py runserver 0.0.0.0:8000"
     env_file:
       - .env
     ports:
-      - "127.0.0.1:8000:8000"
+      - "8000:8000"
     volumes:
       - .:/code
-    links:
-      - db
     depends_on:
       - db
