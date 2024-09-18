@@ -8,6 +8,8 @@ from user.models import PatientProfile, DoctorProfile
 from .models import Reservation
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib import messages
+from django.core.mail import send_mail
+from django.conf import settings
 
 class ReservationCreateView(LoginRequiredMixin, CreateView):
     model = Reservation
@@ -63,6 +65,11 @@ class ReservationCreateView(LoginRequiredMixin, CreateView):
         reservation.payment_status = True
         reservation.save()
 
+        subject = "Reservation Confirmation"
+        message = f"Dear {user.first_name},\n\nYour appointment with Dr. {doctor_profile.user.first_name} : {doctor_profile.user.last_name} has been successfully reserved.\n\nVisit Fee: {visit_fee}\nAppointment Time: {appointment.date} At {appointment.start_time}-{appointment.end_time} \n\nThank you!"
+        recipient_list = [user.username]
+
+        send_mail(subject, message, settings.DEFAULT_FROM_EMAIL, recipient_list)
         # Success message
         messages.success(self.request, "Payment successful.")
         return redirect('doctor:doctor_detail', doctor_profile.id)

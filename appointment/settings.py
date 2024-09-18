@@ -147,3 +147,8 @@ STATICFILES_DIRS = [
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+EMAIL_HOST = 'sandbox.smtp.mailtrap.io'
+EMAIL_HOST_USER = '580df56699f324'
+EMAIL_HOST_PASSWORD = '9db2e33742c9ce'
+EMAIL_PORT = '2525'
