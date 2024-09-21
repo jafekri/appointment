@@ -2,15 +2,12 @@ import random
 from datetime import timedelta
 from django.utils import timezone
 
-from django.contrib.auth import login, logout, authenticate
+from django.contrib.auth import login, authenticate
 from django.shortcuts import redirect, render
 from django.views.generic.edit import CreateView
-from django.contrib.auth.views import LoginView,  PasswordChangeView
 from django.urls import reverse_lazy
 from django.views import View
-from .forms import (CustomUserCreationForm, CustomAuthenticationForm,
-                    VerifyCodeForm, CustomUserChangeForm,
-                    CustomPasswordChangeForm,)
+from .forms import CustomUserCreationForm, DoctorUserCreationForm, VerifyCodeForm, CustomUserChangeForm
 from .models import User, DoctorProfile, PatientProfile, Specialization
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -18,40 +15,46 @@ from django.views.generic import TemplateView, UpdateView
 
 
 class SignUpView(CreateView):
-    form_class = CustomUserCreationForm
-    template_name = 'user/signup.html'
+    template_name = 'registration/signup.html'
     success_url = reverse_lazy('user:verify_code')
 
-    def form_valid(self, form):
-        code = random.randint(1000, 9999)
-        print(f"code: {code}")
-        form.cleaned_data['otp_code'] = code
-        user = form.save(commit=False)
-        user.otp_code = code
-        user.save()
+    def get_form_class(self):
+        print(self.request.path)
+        if self.request.path == '/auth/register/':
+            return CustomUserCreationForm
+        else:
+            return DoctorUserCreationForm
 
-        role = form.cleaned_data.get('role')
-        specialization_name = form.cleaned_data.get('specialization')
-        visit_fee = form.cleaned_data.get('consultation_fee')
-        if role == 'doctor':
-            if specialization_name:
-                specialization, created = Specialization.objects.get_or_create(name=specialization_name)
-                DoctorProfile.objects.create(user=user, specialization=specialization, visit_fee=visit_fee)
-            else:
-                messages.error(self.request, 'Please provide a specialization for the doctor.', 'danger')
-                return self.form_invalid(form)
-        elif role == 'patient':
-            PatientProfile.objects.create(user=user)
+    # def form_valid(self, form):
+    #     code = random.randint(1000, 9999)
+    #     print(f"code: {code}")
+    #     form.cleaned_data['otp_code'] = code
+    #     user = form.save(commit=False)
+    #     user.otp_code = code
+    #     user.save()
 
-        self.request.session['user_info'] = {
-            'phone_number': form.cleaned_data['phone'],
-            'username': form.cleaned_data['username'],
-            'password': form.cleaned_data['password1'],
-        }
-        messages.success(self.request, 'We send a Code.', 'success')
-        return super().form_valid(form)
+    #     role = form.cleaned_data.get('role')
+    #     specialization_name = form.cleaned_data.get('specialization')
+    #     visit_fee = form.cleaned_data.get('consultation_fee')
+    #     if role == 'doctor':
+    #         if specialization_name:
+    #             specialization, created = Specialization.objects.get_or_create(name=specialization_name)
+    #             DoctorProfile.objects.create(user=user, specialization=specialization, visit_fee=visit_fee)
+    #         else:
+    #             messages.error(self.request, 'Please provide a specialization for the doctor.', 'danger')
+    #             return self.form_invalid(form)
+    #     elif role == 'patient':
+    #         PatientProfile.objects.create(user=user)
 
-    def form_invalid(self, form):
+    #     self.request.session['user_info'] = {
+    #         'phone_number': form.cleaned_data['phone'],
+    #         'username': form.cleaned_data['username'],
+    #         'password': form.cleaned_data['password1'],
+    #     }
+    #     messages.success(self.request, 'We send a Code.', 'success')
+    #     return super().form_valid(form)
+
+    # def form_invalid(self, form):
         return self.render_to_response(self.get_context_data(form=form))
 
 
@@ -93,21 +96,6 @@ class VerifyCodeView(View):
         return render(request, 'user/verifyCode.html', {'form': form})
 
 
-class CustomLoginView(LoginView):
-    form_class = CustomAuthenticationForm
-    template_name = 'user/login.html'
-
-    def get_success_url(self):
-        return reverse_lazy('user:profile')
-
-
-class LogoutView(View):
-    def get(self, request):
-        logout(request)
-        messages.success(request, 'you log out successfully')
-        return render(request,'base.html')
-
-
 class ProfileView(LoginRequiredMixin, TemplateView):
     template_name = 'user/profile.html'
 
@@ -121,7 +109,3 @@ class ProfileUpdateView(LoginRequiredMixin, UpdateView):
     def get_object(self):
         return self.request.user
 
-
-class CustomPasswordChangeView(PasswordChangeView):
-    form_class = CustomPasswordChangeForm
-    success_url = reverse_lazy('user:password_change_done')

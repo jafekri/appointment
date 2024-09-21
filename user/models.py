@@ -20,7 +20,6 @@ class User(AbstractUser):
     otp_code = models.IntegerField(blank=True, null=True)
     phone = models.CharField(
         max_length=11,
-        unique=True,
         validators=[
             RegexValidator(regex=r"^09[0-9]{9}$",
                            message="Phone number is not correct!")
