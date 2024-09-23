@@ -1,3 +1,4 @@
+import random
 from email.policy import default
 from typing import Any
 from django import forms
@@ -10,8 +11,8 @@ from django.contrib.auth import get_user_model
 
 class CustomUserCreationForm(UserCreationForm):
 
-    def __init__(self, request=None, *args, **kwargs):
-        super().__init__(request, *args, **kwargs)
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
 
         for visible in self.visible_fields():
             visible.field.widget.attrs['class'] = 'form-control'
@@ -22,13 +23,21 @@ class CustomUserCreationForm(UserCreationForm):
                                                 'last_name',
                                                 'username',
                                                 'phone')
+        
+    def save(self, commit=True):
+        code = random.randint(1000, 9999)
+        print(f"code: {code}")
+        obj = super().save(False)
+        obj.otp_code = code
+        obj.save()
+        return obj
+
 
 class DoctorUserCreationForm(CustomUserCreationForm):
     
     specialization = forms.ModelChoiceField(queryset=Specialization.objects.all())
     consultation_fee = forms.IntegerField()
     
-
 
 class VerifyCodeForm(forms.Form):
     code = forms.IntegerField()

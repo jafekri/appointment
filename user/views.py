@@ -1,14 +1,12 @@
-import random
 from datetime import timedelta
 from django.utils import timezone
 
 from django.contrib.auth import login, authenticate
-from django.shortcuts import redirect, render
-from django.views.generic.edit import CreateView
+from django.shortcuts import redirect
+from django.views.generic import CreateView, FormView
 from django.urls import reverse_lazy
-from django.views import View
 from .forms import CustomUserCreationForm, DoctorUserCreationForm, VerifyCodeForm, CustomUserChangeForm
-from .models import User, DoctorProfile, PatientProfile, Specialization
+from .models import User
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import TemplateView, UpdateView
@@ -16,7 +14,7 @@ from django.views.generic import TemplateView, UpdateView
 
 class SignUpView(CreateView):
     template_name = 'registration/signup.html'
-    success_url = reverse_lazy('user:verify_code')
+    success_url = reverse_lazy('verify_code')
 
     def get_form_class(self):
         print(self.request.path)
@@ -24,76 +22,37 @@ class SignUpView(CreateView):
             return CustomUserCreationForm
         else:
             return DoctorUserCreationForm
+    
+    def form_valid(self, form):
+        self.request.session["phone_number"] = form.cleaned_data['phone']
+        return super().form_valid(form)
 
-    # def form_valid(self, form):
-    #     code = random.randint(1000, 9999)
-    #     print(f"code: {code}")
-    #     form.cleaned_data['otp_code'] = code
-    #     user = form.save(commit=False)
-    #     user.otp_code = code
-    #     user.save()
+class VerifyCodeView(FormView):
+    template_name = 'user/verifyCode.html'
+    form_class = VerifyCodeForm
+    success_url = reverse_lazy('doctor:doctor_list')
 
-    #     role = form.cleaned_data.get('role')
-    #     specialization_name = form.cleaned_data.get('specialization')
-    #     visit_fee = form.cleaned_data.get('consultation_fee')
-    #     if role == 'doctor':
-    #         if specialization_name:
-    #             specialization, created = Specialization.objects.get_or_create(name=specialization_name)
-    #             DoctorProfile.objects.create(user=user, specialization=specialization, visit_fee=visit_fee)
-    #         else:
-    #             messages.error(self.request, 'Please provide a specialization for the doctor.', 'danger')
-    #             return self.form_invalid(form)
-    #     elif role == 'patient':
-    #         PatientProfile.objects.create(user=user)
+    def form_valid(self, form):
+        user_phone_number = self.request.session['phone_number']
+        entred_code = form.cleaned_data.get('code')
 
-    #     self.request.session['user_info'] = {
-    #         'phone_number': form.cleaned_data['phone'],
-    #         'username': form.cleaned_data['username'],
-    #         'password': form.cleaned_data['password1'],
-    #     }
-    #     messages.success(self.request, 'We send a Code.', 'success')
-    #     return super().form_valid(form)
+        try:
+            target_user = User.objects.get(phone=user_phone_number)
+        except User.DoesNotExist:
+            messages.error(request, 'No OTP code found for this phone number.', 'danger')
+            return redirect('user:verify_code')
 
-    # def form_invalid(self, form):
-        return self.render_to_response(self.get_context_data(form=form))
+        # TODO: refactor otp exp flow
+        expiration_time = target_user.date_joined + timedelta(minutes=2)
+        if timezone.now() > expiration_time:
+            messages.error(self.request, 'This code has expired. Please request a new one.', 'danger')
+            return redirect('user:login')
 
-
-class VerifyCodeView(View):
-    verify_form = VerifyCodeForm
-
-    def get(self, request):
-        form = self.verify_form()
-        return render(request, 'user/verifyCode.html', {'form': form})
-
-    def post(self, request):
-        user_session = request.session['user_info']
-        form = self.verify_form(request.POST)
-
-        if form.is_valid():
-            cd = form.cleaned_data
-
-            try:
-                code_instance = User.objects.get(phone=user_session['phone_number'], otp_code=cd['code'])
-            except User.DoesNotExist:
-                messages.error(request, 'No OTP code found for this phone number.', 'danger')
-                return redirect('user:verify_code')
-
-            expiration_time = code_instance.date_joined + timedelta(minutes=2)
-            if timezone.now() > expiration_time:
-                messages.error(request, 'This code has expired. Please request a new one.', 'danger')
-                return redirect('user:login')
-
-            if cd['code'] == code_instance.otp_code:
-                user_login = authenticate(request, username=user_session['username'], password=user_session['password'])
-                if user_login:
-                    login(request, user_login)
-                    messages.success(request, 'You have logged in successfully', 'success')
-                    return redirect('user:profile')
-            else:
-                messages.error(request, 'Incorrect code', 'danger')
-                return redirect('user:verify_code')
-
-        return render(request, 'user/verifyCode.html', {'form': form})
+        if entred_code == target_user.otp_code:
+            return redirect('login')
+        else:
+            messages.error(self.request, 'Incorrect code', 'danger')
+            return redirect('user:verify_code')
 
 
 class ProfileView(LoginRequiredMixin, TemplateView):
