@@ -16,11 +16,11 @@
         experience (year) : {{ doctor.experience }}<br>
         visit fee : {{ doctor.visit_fee }}<br>
     </p>
-    <a href="{% url 'doctor:doctor_detail' doctor.id %}" class="btn btn-primary">Detail page</a>
+    <a href="{% url 'reservation:doctor_detail' doctor.id %}" class="btn btn-primary">Detail page</a>
   </div>
     </div>
         {% endfor %}
 
-<!--<a href="{% url 'doctor:doctor_create' %}"> + Add Doctor</a><br>-->
+<!--<a href="{% url 'reservation:doctor_create' %}"> + Add Doctor</a><br>-->
 
 {%endblock%}

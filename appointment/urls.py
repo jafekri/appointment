@@ -14,24 +14,25 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+
 from django.contrib import admin
 from django.urls import path, include
 from user.views import SignUpView, VerifyCodeView
+from user.forms import AuthenticationForm
+from django.contrib.auth.views import LoginView
 
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    
+    path("admin/", admin.site.urls),
     # auth urls
-    path('auth/', include('django.contrib.auth.urls')),
-    path('auth/register/', SignUpView.as_view(), name='signup'),
-    path('auth/register/doctor/', SignUpView.as_view(), name='doctor_signup'),
-    path('auth/verify/', VerifyCodeView.as_view(), name='verify_code'),
+    path("auth/login/", LoginView.as_view(form_class=AuthenticationForm), name="login"),
+    path("auth/", include("django.contrib.auth.urls")),
+    path("auth/register/", SignUpView.as_view(), name="signup"),
+    path("auth/register/doctor/", SignUpView.as_view(), name="doctor_signup"),
+    path("auth/verify/", VerifyCodeView.as_view(), name="verify_code"),
+    path("user/", include("user.urls", namespace="user")),
 
-    path('user/', include('user.urls', namespace='user')),
-    path('', include('doctor.urls', namespace='doctor')),
-    path('appointment/', include('appointmenttime.urls', namespace='appointmenttime')),
-    path('reservation/', include('reservation.urls', namespace='reservation')),
-    path('rating/', include('rating.urls', namespace='rating')),
-    path('comment/', include('comment.urls', namespace='comment')),
+    path("", include("reservation.urls", namespace="reservation")),
+    path("rating/", include("rating.urls", namespace="rating")),
+    path("comment/", include("comment.urls", namespace="comment")),
 ]
