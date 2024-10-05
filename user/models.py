@@ -10,12 +10,6 @@ from django.db.models import Avg
 
 
 class User(AbstractUser):
-    """
-       username , password , first_name and last_name
-       inherited from AbstractUser
-    """
-    # first_name = models.CharField(max_length=150, blank=True, null=True)
-    # last_name = models.CharField(max_length=150, blank=True, null=True)
     balance = models.BigIntegerField(default=0)
     otp_code = models.IntegerField(blank=True, null=True)
     phone = models.CharField(
@@ -24,21 +18,6 @@ class User(AbstractUser):
             RegexValidator(regex=r"^09[0-9]{9}$",
                            message="Phone number is not correct!")
         ]
-    )
-
-    """
-        To avoid interference with auth.User.groups
-    """
-    groups = models.ManyToManyField(
-        'auth.Group',
-        related_name='user_groups',
-        blank=True,
-    )
-
-    user_permissions = models.ManyToManyField(
-        'auth.Permission',
-        related_name='user_permissions',
-        blank=True,
     )
 
     def get_role(self):
